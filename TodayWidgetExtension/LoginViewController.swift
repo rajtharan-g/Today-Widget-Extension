@@ -11,26 +11,50 @@ import UIKit
 class LoginViewController: UIViewController {
 
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var loginButton: UIButton!
+    
+    
+    // MARK:- View life cycle methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
-    @IBAction func loginButtonPressed(_ sender: UIButton) {
-        activityIndicator.startAnimating()
-        loginNetworkRequest { (error, expires, accessToken) in
-            self.activityIndicator.stopAnimating()
-            if let error = error {
-                print(error.localizedDescription)
-            } else {
-                let sb = UIStoryboard(name: "Main", bundle: nil)
-                let vc = sb.instantiateViewController(withIdentifier: "Dashboard") as! ViewController
-                vc.expires = expires
-                vc.accessToken = accessToken
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        let defaults = UserDefaults(suiteName: "group.com.mallowtech.TodayWidgetExtension")
+        if let accessToken = defaults?.object(forKey: "accessToken") as? String {
+            loginButton.setTitle("Log out", for: .normal)
+        } else {
+            loginButton.setTitle("Log in", for: .normal)
         }
     }
+    
+    
+    // MARK:- IBAction methods
+    
+    @IBAction func loginButtonPressed(_ sender: UIButton) {
+        if loginButton.title(for: .normal) == "Log in" {
+            activityIndicator.startAnimating()
+            loginNetworkRequest { (error, expires, accessToken) in
+                self.activityIndicator.stopAnimating()
+                if let error = error {
+                    print(error.localizedDescription)
+                } else {
+                    let sb = UIStoryboard(name: "Main", bundle: nil)
+                    let vc = sb.instantiateViewController(withIdentifier: "Dashboard") as! ViewController
+                    vc.expires = expires
+                    vc.accessToken = accessToken
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            }
+        } else {
+            logout()
+        }
+    }
+    
+    
+    // MARK:- Custom methods
     
     func loginNetworkRequest(completion: @escaping (NSError?, String?, String?) -> Void) {
         let params = ["access_key": "f5875fa5f7bcc14e51b1930eea224f4f",
@@ -75,6 +99,15 @@ class LoginViewController: UIViewController {
         task.resume()
     }
     
+    func logout() {
+        let sharedSuite = UserDefaults(suiteName: "group.com.mallowtech.TodayWidgetExtension")!
+        sharedSuite.removeObject(forKey: "accessToken")
+        sharedSuite.removeObject(forKey: "timeExpiry")
+        sharedSuite.removeObject(forKey: "timeString")
+        sharedSuite.synchronize()
+        loginButton.setTitle("Log in", for: .normal)
+    }
+    
     func paramsString(parameters: [String : String]) -> String {
         var paramsString = [String]()
         for (key, value) in parameters {
@@ -88,20 +121,3 @@ class LoginViewController: UIViewController {
     }
     
 }
-
-//extension Dictionary {
-//    
-//    func paramsString() -> String {
-//        var paramsString = [String]()
-//        for (key, value) in self {
-//            guard let stringValue = value as? String, let stringKey = key as? String else {
-//                return ""
-//            }
-//            paramsString += [stringKey + "=" + "\(stringValue)"]
-//            
-//        }
-//        return (paramsString.isEmpty ? "" : paramsString.joined(separator: "&"))
-//    }
-//    
-//}
-

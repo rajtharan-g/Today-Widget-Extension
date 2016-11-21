@@ -14,13 +14,23 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     @IBOutlet weak var widgetTimeLabel: UILabel!
     @IBOutlet weak var expiryTimeLabel: UILabel!
     @IBOutlet weak var loginButton: UIButton!
+    
+    
+    // MARK:- View life cycle methods
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if #available(iOSApplicationExtension 10.0, *) {
+            self.extensionContext?.widgetLargestAvailableDisplayMode = .expanded
+        } else {
+            // Fallback on earlier versions
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         let defaults = UserDefaults(suiteName: "group.com.mallowtech.TodayWidgetExtension")
         if let accessToken = defaults?.object(forKey: "accessToken") as? String {
             loginButton.setTitle("Log out", for: .normal)
@@ -29,10 +39,8 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         }
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
+    
+    // MARK:- IBAction methods
     
     @IBAction func loginButtonPressed(_ sender: UIButton) {
         // User tapped on the widget. Open the application using the specified URL Scheme.
@@ -46,6 +54,9 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         }
         self.extensionContext?.open(appURL! as URL, completionHandler:nil)
     }
+    
+    
+    // MARK:- Delegate methods
     
     func widgetPerformUpdate(completionHandler: ((NCUpdateResult) -> Void)) {
         // Perform any setup necessary in order to update the view.
@@ -61,5 +72,16 @@ class TodayViewController: UIViewController, NCWidgetProviding {
             }
             completionHandler(NCUpdateResult.newData)
         }
+    
+    @available(iOSApplicationExtension 10.0, *)
+    func widgetActiveDisplayModeDidChange(_ activeDisplayMode: NCWidgetDisplayMode, withMaximumSize maxSize: CGSize) {
+        if (activeDisplayMode == NCWidgetDisplayMode.compact) {
+            self.preferredContentSize = maxSize
+        }
+        else {
+            self.preferredContentSize = CGSize(width: maxSize.width, height: 210)
+        }
+    }
+
 }
 

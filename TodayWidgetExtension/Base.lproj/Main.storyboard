@@ -35,15 +35,16 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="9Ev-Un-Ttb" firstAttribute="centerX" secondItem="NHe-5g-J92" secondAttribute="centerX" id="0g6-E1-f5l"/>
-                            <constraint firstItem="9Ev-Un-Ttb" firstAttribute="centerY" secondItem="NHe-5g-J92" secondAttribute="centerY" id="MQO-iR-sx2"/>
                             <constraint firstItem="twz-vf-q3c" firstAttribute="centerX" secondItem="NHe-5g-J92" secondAttribute="centerX" id="RNX-4m-FdK"/>
+                            <constraint firstItem="aVs-Aa-KHa" firstAttribute="top" secondItem="9Ev-Un-Ttb" secondAttribute="bottom" constant="150" id="en8-8m-6k5"/>
+                            <constraint firstItem="9Ev-Un-Ttb" firstAttribute="centerX" secondItem="NHe-5g-J92" secondAttribute="centerX" id="lRc-3c-aOn"/>
                             <constraint firstItem="twz-vf-q3c" firstAttribute="centerY" secondItem="NHe-5g-J92" secondAttribute="centerY" id="y0o-F9-FdK"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Press the login" id="Yax-E1-br1"/>
                     <connections>
                         <outlet property="activityIndicator" destination="twz-vf-q3c" id="pOK-Tl-2Q5"/>
+                        <outlet property="loginButton" destination="9Ev-Un-Ttb" id="NMN-mo-Dlz"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FrB-NK-iXK" userLabel="First Responder" sceneMemberID="firstResponder"/>

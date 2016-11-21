@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import TodayWidgetNetworkKit
 
 class ViewController: UIViewController {
 
